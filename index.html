@@ -15,7 +15,6 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Payhip Official SDK (Powers overlay modal, cart session & instant digital downloads) -->
-  <script type="text/javascript" src="https://payhip.com/payhip.js"></script>
 
   <script>
     tailwind.config = {
@@ -487,10 +486,26 @@
     // --- Page Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
-      renderCatalog();
+      renderCatalog(); // 1. Render all HTML cards first
       generateMathChallenge();
       lucide.createIcons();
+
+      // 2. Load Payhip SDK now that the buttons are actually in the DOM
+      loadPayhipScript();
     });
+
+    // Dynamically inject payhip.js after elements exist
+    function loadPayhipScript() {
+      // If already present, don't duplicate
+      if (document.getElementById('payhip-sdk')) return;
+
+      const script = document.createElement('script');
+      script.id = 'payhip-sdk';
+      script.type = 'text/javascript';
+      script.src = 'https://payhip.com/payhip.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
 
     // --- Theme Controller (Dark / Light) ---
     function initTheme() {
